@@ -20,27 +20,27 @@ func (c credentialMock) GetToken(ctx context.Context, req policy.TokenRequestOpt
 func Test_NewOmniClient(t *testing.T) {
 	t.Run("returns no error", func(t *testing.T) {
 		cred := &credentialMock{}
-		_, err := NewOmniClient(cred)
+		_, err := NewOmniClient(cred, OmniClientOptions{})
 		assert.NoError(t, err)
 	})
 
 	t.Run("initializes RoleEligibilityClient", func(t *testing.T) {
 		cred := &credentialMock{}
-		c, err := NewOmniClient(cred)
+		c, err := NewOmniClient(cred, OmniClientOptions{})
 		assert.NoError(t, err)
 		assert.NotNil(t, c.RoleEligibilityClient)
 	})
 
 	t.Run("initializes RoleDefinitionsClient", func(t *testing.T) {
 		cred := &credentialMock{}
-		c, err := NewOmniClient(cred)
+		c, err := NewOmniClient(cred, OmniClientOptions{})
 		assert.NoError(t, err)
 		assert.NotNil(t, c.RoleDefinitionsClient)
 	})
 
 	t.Run("initializes RoleAssignmentClient", func(t *testing.T) {
 		cred := &credentialMock{}
-		c, err := NewOmniClient(cred)
+		c, err := NewOmniClient(cred, OmniClientOptions{})
 		assert.NoError(t, err)
 		assert.NotNil(t, c.RoleAssignmentClient)
 	})
