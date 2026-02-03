@@ -1,0 +1,103 @@
+{
+    "value": [
+        {
+            "properties": {
+                "roleEligibilityScheduleId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.KeyVault/vaults/kv-example/providers/Microsoft.Authorization/roleEligibilitySchedules/a1d385e0-34f9-ceac-395c-f0c0aacc2919",
+                "scope": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.KeyVault/vaults/kv-example",
+                "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
+                "principalId": "1b150243-467a-4ed4-8270-0d1d1f623bec",
+                "principalType": "Group",
+                "status": "Provisioned",
+                "startDateTime": "2025-03-05T17:35:04.363Z",
+                "memberType": "Group",
+                "createdOn": "2025-03-05T17:35:04.363Z",
+                "expandedProperties": {
+                    "principal": {
+                        "id": "1b150243-467a-4ed4-8270-0d1d1f623bec",
+                        "displayName": "Azure - Example - Group",
+                        "type": "Group"
+                    },
+                    "roleDefinition": {
+                        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
+                        "displayName": "Key Vault Secrets Officer",
+                        "type": "BuiltInRole"
+                    },
+                    "scope": {
+                        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.KeyVault/vaults/kv-example",
+                        "displayName": "kv-example",
+                        "type": "Microsoft.KeyVault/vaults"
+                    }
+                }
+            },
+            "name": "68165d74-d817-4777-9250-c97f4645d009",
+            "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example-rg/providers/Microsoft.KeyVault/vaults/kv-example/providers/Microsoft.Authorization/roleEligibilityScheduleInstances/68165d74-d817-4777-9250-c97f4645d009",
+            "type": "Microsoft.Authorization/roleEligibilityScheduleInstances"
+        },
+        {
+            "properties": {
+                "roleEligibilityScheduleId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleEligibilitySchedules/99777ae5-fa9e-91c4-4cf2-70ba3a432365",
+                "scope": "/subscriptions/00000000-0000-0000-0000-000000000000",
+                "roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
+                "principalId": "d1ac1ff4-9e20-4f66-8fef-b555e97180fa",
+                "principalType": "Group",
+                "status": "Provisioned",
+                "startDateTime": "2026-01-09T19:27:21.107Z",
+                "memberType": "Group",
+                "createdOn": "2026-01-09T19:27:21.107Z",
+                "expandedProperties": {
+                    "principal": {
+                        "id": "d1ac1ff4-9e20-4f66-8fef-b555e97180fa",
+                        "displayName": "Azure - Example - Group",
+                        "type": "Group"
+                    },
+                    "roleDefinition": {
+                        "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
+                        "displayName": "Key Vault Secrets Officer",
+                        "type": "BuiltInRole"
+                    },
+                    "scope": {
+                        "id": "/subscriptions/00000000-0000-0000-0000-000000000000",
+                        "displayName": "Subscription - Test",
+                        "type": "subscription"
+                    }
+                }
+            },
+            "name": "99777ae5-fa9e-91c4-4cf2-70ba3a432365",
+            "id": "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleEligibilityScheduleInstances/99777ae5-fa9e-91c4-4cf2-70ba3a432365",
+            "type": "Microsoft.Authorization/roleEligibilityScheduleInstances"
+        },
+        {
+            "properties": {
+                "roleEligibilityScheduleId": "/providers/Microsoft.Management/managementGroups/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleEligibilitySchedules/46760108-a1a0-4f53-a808-a32fbce153c7",
+                "scope": "/providers/Microsoft.Management/managementGroups/00000000-0000-0000-0000-000000000000",
+                "roleDefinitionId": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+                "principalId": "85e5df6f-dfb1-4447-b582-3c581c9eba5f",
+                "principalType": "Group",
+                "status": "Provisioned",
+                "startDateTime": "2025-01-14T20:32:00.317Z",
+                "memberType": "Group",
+                "createdOn": "2025-01-14T20:32:00.317Z",
+                "expandedProperties": {
+                    "principal": {
+                        "id": "85e5df6f-dfb1-4447-b582-3c581c9eba5f",
+                        "displayName": "Azure - Example - Group",
+                        "type": "Group"
+                    },
+                    "roleDefinition": {
+                        "id": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+                        "displayName": "Owner",
+                        "type": "BuiltInRole"
+                    },
+                    "scope": {
+                        "id": "/providers/Microsoft.Management/managementGroups/00000000-0000-0000-0000-000000000000",
+                        "displayName": "Tenant Root Group",
+                        "type": "managementgroup"
+                    }
+                }
+            },
+            "name": "627f4610-5e8a-4f61-a773-dca39e03ff57",
+            "id": "/providers/Microsoft.Management/managementGroups/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleEligibilityScheduleInstances/627f4610-5e8a-4f61-a773-dca39e03ff57",
+            "type": "Microsoft.Authorization/roleEligibilityScheduleInstances"
+        }
+    ]
+}
