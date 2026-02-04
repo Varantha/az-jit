@@ -8,12 +8,25 @@ import (
 	"github.com/varantha/az-jit/internal/clients"
 )
 
-func ListEligibleAssignments(client *clients.OmniClient) {
+func listEligibleAssignments(ctx context.Context, client *clients.OmniClient) ([]*armauthorization.RoleEligibilityScheduleInstance, error) {
+	var allEligibleRoles []*armauthorization.RoleEligibilityScheduleInstance
+	pager := client.RoleEligibilityClient.NewListForScopePager("/", nil)
 
+	for pager.More() {
+		page, err := pager.NextPage(ctx)
+		if err != nil {
+			log.Fatalf("error fetching next page: %v", err)
+			return nil, err
+		}
+
+		allEligibleRoles = append(allEligibleRoles, page.Value...)
+	}
+
+	return allEligibleRoles, nil
 }
 
-func GetActiveLinkedRoleAssignmentIDs(ctx context.Context, client *clients.OmniClient) (map[string]interface{}, error) {
-	output := make(map[string]interface{})
+func getActiveLinkedRoleAssignmentIDs(ctx context.Context, client *clients.OmniClient) (map[string]any, error) {
+	output := make(map[string]any)
 	var linkedRoleID string
 	filter := "asTarget()"
 	pager := client.RoleAssignmentClient.NewListForScopePager("/", &armauthorization.RoleAssignmentScheduleInstancesClientListForScopeOptions{
@@ -23,10 +36,11 @@ func GetActiveLinkedRoleAssignmentIDs(ctx context.Context, client *clients.OmniC
 		page, err := pager.NextPage(ctx)
 		if err != nil {
 			log.Fatalf("error fetching next page: %v", err)
+			return nil, err
 		}
 
-		for _, inst := range page.Value {
-			props := inst.Properties
+		for _, roleAssignment := range page.Value {
+			props := roleAssignment.Properties
 			if props == nil || props.RoleDefinitionID == nil || props.Scope == nil {
 				continue
 			}
@@ -41,27 +55,16 @@ func GetActiveLinkedRoleAssignmentIDs(ctx context.Context, client *clients.OmniC
 	return output, nil
 }
 
-type pagerReturn struct {
-	NextLink *string
-	Value    []*any
-}
-
-type pager interface {
-	More() bool
-	NextPage(ctx context.Context) (pagerReturn, error)
-}
-
-func ExpandPage(p pager, ctx context.Context) ([]any, error) {
-	results := []any{}
-	for p.More() {
-		page, err := p.NextPage(ctx)
-		if err != nil {
-			log.Fatalf("error fetching next page: %v", err)
-			return nil, err
-		}
-		for _, val := range page.Value {
-			results = append(results, val)
-		}
+func GetEligibleRoles(ctx context.Context, client *clients.OmniClient) ([]EligibleRoleAssignment, error) {
+	eligibleRoles, err := listEligibleAssignments(ctx, client)
+	if err != nil {
+		return nil, err
 	}
-	return results, nil
+
+	activeLinkedRoleIDs, err := getActiveLinkedRoleAssignmentIDs(ctx, client)
+	if err != nil {
+		return nil, err
+	}
+
+	return *NewEligibleRoleCollection(ctx, eligibleRoles, activeLinkedRoleIDs), nil
 }

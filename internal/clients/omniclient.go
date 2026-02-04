@@ -12,7 +12,6 @@ import (
 type OmniClient struct {
 	cliCredential         azcore.TokenCredential
 	RoleEligibilityClient *armauthorization.RoleEligibilityScheduleInstancesClient
-	RoleDefinitionsClient *armauthorization.RoleDefinitionsClient
 	RoleAssignmentClient  *armauthorization.RoleAssignmentScheduleInstancesClient
 }
 
@@ -26,11 +25,6 @@ func NewOmniClient(token azcore.TokenCredential, opt OmniClientOptions) (*OmniCl
 		log.Fatalf("failed to create instance client: %v", err)
 	}
 
-	roleDefClient, err := armauthorization.NewRoleDefinitionsClient(token, opt.ARM)
-	if err != nil {
-		log.Fatalf("failed to create role definitions client: %v", err)
-	}
-
 	assignmentClient, err := armauthorization.NewRoleAssignmentScheduleInstancesClient(token, opt.ARM)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create assignment client: %w", err)
@@ -39,7 +33,6 @@ func NewOmniClient(token azcore.TokenCredential, opt OmniClientOptions) (*OmniCl
 	return &OmniClient{
 		cliCredential:         token,
 		RoleEligibilityClient: instanceClient,
-		RoleDefinitionsClient: roleDefClient,
 		RoleAssignmentClient:  assignmentClient,
 	}, nil
 }
