@@ -2,7 +2,6 @@ package azure
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/authorization/armauthorization"
@@ -11,19 +10,6 @@ import (
 
 func ListEligibleAssignments(client *clients.OmniClient) {
 
-}
-
-func GetRoleDefinitionName(ctx context.Context, roleDefinitionID string, client *clients.OmniClient) (string, error) {
-	resp, err := client.RoleDefinitionsClient.GetByID(ctx, roleDefinitionID, nil)
-	if err != nil {
-		return "(unknown)", fmt.Errorf("failed to resolve role definition %s: %w", roleDefinitionID, err)
-	}
-
-	if resp.Properties != nil && resp.Properties.RoleName != nil {
-		return *resp.Properties.RoleName, nil
-	}
-
-	return "(unknown)", nil
 }
 
 func GetActiveLinkedRoleAssignmentIDs(ctx context.Context, client *clients.OmniClient) (map[string]interface{}, error) {
