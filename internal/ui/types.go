@@ -11,18 +11,6 @@ const (
 	DomainGroups Domain = "groups" // Microsoft Graph: PIM for Groups
 )
 
-// User is the signed-in identity.
-type User struct {
-	Email  string
-	Region string // e.g. "eu-west" - whichever Azure region your tenant's home is
-}
-
-// Tenant is the Entra tenant the user is signed into.
-type Tenant struct {
-	Name string // display name
-	ID   string // tenant UUID
-}
-
 // Role is one eligible (or active) role assignment.
 // Populate one of these per row returned from the three APIs:
 //   - Entra: GET /roleManagement/directory/roleEligibilityScheduleInstances + roleAssignmentScheduleInstances
