@@ -7,20 +7,6 @@ import "time"
 // Azure / Graph loader (see app.go Init and README for endpoints) and then
 // drop this file entirely.
 
-func mockUser() User {
-	return User{
-		Email:  "sam.smith@contoso.com",
-		Region: "eu-west",
-	}
-}
-
-func mockTenant() Tenant {
-	return Tenant{
-		Name: "Contoso Enterprises",
-		ID:   "8a4f3b2e-9c71-4d5a-b0f2-c9d1e4a7b5c8",
-	}
-}
-
 // mockAllRoles is the combined fixture used to seed the list screen with
 // something to render across all three tabs.
 func mockAllRoles() []Role {
@@ -126,11 +112,11 @@ func mockActivations() []Activation {
 	}
 
 	return []Activation{
-		{Role: globalAdmin},                                 // all inherited
+		{Role: globalAdmin}, // all inherited
 		{Role: appAdmin, Reason: "Manual fix after deploy"}, // reason override
-		{Role: kv},                                          // duration will clamp to 2h
-		{Role: contributor, Ticket: " "},                    // explicit "clear" (see note)
-		{Role: reader},                                      // ticket not required => "n/a"
+		{Role: kv},                       // duration will clamp to 2h
+		{Role: contributor, Ticket: " "}, // explicit "clear" (see note)
+		{Role: reader},                   // ticket not required => "n/a"
 	}
 }
 

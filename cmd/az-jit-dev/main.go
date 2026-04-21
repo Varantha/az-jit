@@ -7,16 +7,19 @@ import (
 	"net/http"
 	"os"
 
+	tea "charm.land/bubbletea/v2"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/arm"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/policy"
-	tea "charm.land/bubbletea/v2"
 	"github.com/h2non/gock"
+	"github.com/varantha/az-jit/internal/auth"
 	"github.com/varantha/az-jit/internal/clients"
 	"github.com/varantha/az-jit/internal/ui"
 )
 
 //go:embed testdata/*.json
 var testdataFS embed.FS
+
+var mockToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiVGVzdCBVc2VyIiwidXBuIjoidGVzdEBleGFtcGxlLmNvbSIsInRpZCI6IjExMTExMTExLTExMTEtMTExMS0xMTExLTExMTExMTExMTExMSIsIm9pZCI6IjIyMjIyMjIyLTIyMjItMjIyMi0yMjIyLTIyMjIyMjIyMjIyMiJ9.fake-signature"
 
 func main() {
 
@@ -57,7 +60,7 @@ func main() {
 		ARM: armOptions,
 	}
 
-	cred := &clients.CredentialMock{}
+	cred := &auth.MockCred{Tok: mockToken}
 	client, err := clients.NewOmniClient(cred, OCOptions)
 	if err != nil {
 		log.Fatalf("failed to build omni client: %v", err)

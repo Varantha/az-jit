@@ -10,7 +10,6 @@ var (
 	cCursorBg    = lipgloss.Color("#2d1f5f")
 	cActiveTabBg = lipgloss.Color("#1a1532")
 
-	cAzure      = lipgloss.Color("#60a5fa")
 	cAzureLight = lipgloss.Color("#93c5fd")
 	cAzureBg    = lipgloss.Color("#1e3a5f")
 
@@ -38,7 +37,7 @@ var (
 	sTer       = lipgloss.NewStyle().Foreground(cTer)
 	sDim       = lipgloss.NewStyle().Foreground(cDim)
 	sDimmer    = lipgloss.NewStyle().Foreground(cDimmer)
-	sTenantID  = lipgloss.NewStyle().Foreground(cAzure)
+	sTenantID  = lipgloss.NewStyle().Foreground(cTer)
 	sConnected = lipgloss.NewStyle().Foreground(cGreen)
 
 	sScreenTitle = lipgloss.NewStyle().Foreground(cPurpleLight).Bold(true)

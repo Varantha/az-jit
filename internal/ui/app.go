@@ -2,13 +2,19 @@ package ui
 
 import (
 	tea "charm.land/bubbletea/v2"
+	"github.com/varantha/az-jit/internal/auth"
 	"github.com/varantha/az-jit/internal/clients"
 )
 
 type screen int
 
 const (
-	screenRoleList screen = iota
+	// screenLoading is the default on startup: it shows while the initial
+	// identity / role loads are in flight. Once identityLoadedMsg arrives
+	// Update swaps to screenRoleList.
+	screenLoading screen = iota
+	screenError
+	screenRoleList
 	screenConfig
 )
 
@@ -30,8 +36,11 @@ type model struct {
 	height int
 
 	// Shared static state used by both views.
-	user   User
-	tenant Tenant
+	authedUser auth.AuthedUser
+
+	// loadErr holds the most recent fatal load error. When non-nil the
+	// screen is switched to screenError and the user can only quit.
+	loadErr error
 
 	// Role-list screen state. `roles` holds every eligible / active role
 	// across all three domains; the visible slice is filtered by activeTab.
@@ -48,18 +57,22 @@ type model struct {
 	configCursor    int
 }
 
-// InitialModel builds the starting state for the TUI. It currently seeds the
-// screens with the mock* fixtures so the layout renders immediately; swap
-// those out once the real Azure loaders return data.
+// InitialModel builds the starting state for the TUI. It is pure: no I/O,
+// no errors. All real loads (identity, roles, …) are kicked off from Init()
+// as tea.Cmds; their results land in Update as typed messages.
+//
+// The screen starts on screenLoading; once identityLoadedMsg arrives Update
+// switches to screenRoleList. Mock fixtures still seed the role/activation
+// slices so the list/config screens render the moment auth succeeds — swap
+// those out as the real loaders get wired up.
 func InitialModel(client *clients.OmniClient) model {
 	reason, ticket, _ := mockDefaults()
+
 	return model{
 		Client:          client,
-		screen:          screenRoleList,
+		screen:          screenLoading,
 		width:           contentWidth,
 		height:          30,
-		user:            mockUser(),
-		tenant:          mockTenant(),
 		roles:           mockAllRoles(),
 		activeTab:       DomainEntra,
 		cursorIdx:       0,
@@ -72,23 +85,20 @@ func InitialModel(client *clients.OmniClient) model {
 	}
 }
 
-// Init is the place to kick off the initial API loads. It should return a
-// tea.Cmd (often tea.Batch(...)) whose messages Update handles to replace
-// the mock state. Suggested message types to dispatch:
+// Init kicks off the initial identity load. Extend with tea.Batch(...) as
+// the role loaders are added:
 //
-//	type identityLoadedMsg struct { User User; Tenant Tenant }
-//	type entraRolesLoadedMsg []Role
-//	type azureRolesLoadedMsg []Role
-//	type groupRolesLoadedMsg []Role
-//	type loadErrorMsg         error
+//	return tea.Batch(
+//	    loadIdentityCmd(m.Client),
+//	    loadEntraRolesCmd(m.Client),
+//	    loadAzureRolesCmd(m.Client),
+//	    loadGroupRolesCmd(m.Client),
+//	)
 //
-// Endpoints to call (see README in new_tui/ for full details):
-//   - az account show / token claims     -> identityLoadedMsg
-//   - Graph roleEligibility/Assignment   -> entraRolesLoadedMsg
-//   - ARM roleEligibility/Assignment     -> azureRolesLoadedMsg
-//   - Graph PIM for Groups               -> groupRolesLoadedMsg
+// Each loader emits its own *LoadedMsg on success and a shared
+// loadErrorMsg on failure (see commands.go).
 func (m model) Init() tea.Cmd {
-	return nil
+	return loadIdentityCmd(m.Client)
 }
 
 // Update is intentionally minimal: enough to demo nav between the two screens
@@ -100,6 +110,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
+
+	case identityLoadedMsg:
+		m.authedUser = msg.User
+		m.screen = screenRoleList
+
+	case loadErrorMsg:
+		m.loadErr = msg.Err
+		m.screen = screenError
 
 	case tea.KeyPressMsg:
 		switch msg.String() {
@@ -207,6 +225,10 @@ func (m model) tabCounts() map[Domain]int {
 func (m model) View() tea.View {
 	var content string
 	switch m.screen {
+	case screenLoading:
+		content = m.renderLoading()
+	case screenError:
+		content = m.renderError()
 	case screenRoleList:
 		content = m.renderRoleList()
 	case screenConfig:

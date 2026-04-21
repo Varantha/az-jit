@@ -82,18 +82,16 @@ func (m model) renderRoleList() string {
 	return sb.String()
 }
 
-// User / tenant header, two lines.
+// User / tenant header, single line.
 func (m model) renderUserHeader() string {
 	connectedDot := sConnected.Render("●")
-	region := sTer.Render(m.user.Region)
-	right := connectedDot + " " + region
 
-	line1 := layoutLR(contentWidth, sText.Render(m.user.Email), right)
-	tenant := sTer.Render(m.tenant.Name)
 	sep := sDim.Render("·")
-	id := sTenantID.Render(m.tenant.ID)
-	line2 := "  " + tenant + "  " + sep + " " + id
-	return line1 + "\n" + line2
+	name := sText.Bold(true).Render(m.authedUser.Name)
+	email := sTer.Render(m.authedUser.Email)
+	tenant := sTenantID.Render("tenant " + m.authedUser.TenantID)
+	left := name + "  " + sep + " " + email + "  " + sep + " " + tenant
+	return layoutLR(contentWidth, left, connectedDot)
 }
 
 // Tab bar with count pills and a right-aligned filter hint.
