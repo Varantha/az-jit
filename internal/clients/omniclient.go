@@ -9,9 +9,10 @@ import (
 )
 
 type OmniClient struct {
-	CliCredential         azcore.TokenCredential
-	RoleEligibilityClient *armauthorization.RoleEligibilityScheduleInstancesClient
-	RoleAssignmentClient  *armauthorization.RoleAssignmentScheduleInstancesClient
+	CliCredential                       azcore.TokenCredential
+	RoleEligibilityClient               *armauthorization.RoleEligibilityScheduleInstancesClient
+	RoleAssignmentClient                *armauthorization.RoleAssignmentScheduleInstancesClient
+	RoleAssignmentScheduleRequestClient *armauthorization.RoleAssignmentScheduleRequestsClient
 }
 
 type OmniClientOptions struct {
@@ -29,9 +30,15 @@ func NewOmniClient(cred azcore.TokenCredential, opt OmniClientOptions) (*OmniCli
 		return nil, fmt.Errorf("failed to create assignment client: %w", err)
 	}
 
+	assignmentScheduleRequestClient, err := armauthorization.NewRoleAssignmentScheduleRequestsClient(cred, opt.ARM)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create assignment schedule request client: %w", err)
+	}
+
 	return &OmniClient{
-		CliCredential:         cred,
-		RoleEligibilityClient: instanceClient,
-		RoleAssignmentClient:  assignmentClient,
+		CliCredential:                       cred,
+		RoleEligibilityClient:               instanceClient,
+		RoleAssignmentClient:                assignmentClient,
+		RoleAssignmentScheduleRequestClient: assignmentScheduleRequestClient,
 	}, nil
 }
