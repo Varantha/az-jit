@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestDuration(t *testing.T) {
+func TestParseDuration(t *testing.T) {
 	tests := []struct {
 		name    string
 		input   string
@@ -103,6 +103,75 @@ func TestDuration(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := parseISO8601Duration(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestFormatDuration(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   time.Duration
+		want    string
+		wantErr bool
+	}{
+		{
+			name:    "4 Hours",
+			input:   4 * time.Hour,
+			want:    "PT4H",
+			wantErr: false,
+		},
+		{
+			name:    "30 Minutes",
+			input:   30 * time.Minute,
+			want:    "PT30M",
+			wantErr: false,
+		},
+		{
+			name:    "1 Hour 30 Minutes",
+			input:   1*time.Hour + 30*time.Minute,
+			want:    "PT1H30M",
+			wantErr: false,
+		},
+		{
+			name:    "0 value",
+			input:   0,
+			want:    "",
+			wantErr: true,
+		},
+		{
+			name:    "negative value",
+			input:   -1 * time.Hour,
+			want:    "",
+			wantErr: true,
+		},
+		{
+			name:    "seconds only",
+			input:   30 * time.Second,
+			want:    "",
+			wantErr: true,
+		},
+		{
+			name:    "24 Hours",
+			input:   24 * time.Hour,
+			want:    "PT24H",
+			wantErr: false,
+		},
+		{
+			name:    "round seconds",
+			input:   2*time.Hour + 30*time.Second,
+			want:    "PT2H",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := formatISO8601Duration(tt.input)
 			if tt.wantErr {
 				assert.Error(t, err)
 				return

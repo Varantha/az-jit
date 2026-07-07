@@ -1,8 +1,10 @@
 package azure
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -25,7 +27,6 @@ func parseISO8601Duration(s string) (time.Duration, error) {
 
 	if len(s) < 3 {
 		return 0, errInvalid(s)
-
 	}
 	if s[position] != 'P' {
 		return 0, errInvalid(s)
@@ -70,4 +71,27 @@ func parseISO8601Duration(s string) (time.Duration, error) {
 
 func errInvalid(s string) error {
 	return fmt.Errorf("invalid ISO8601 duration %q", s)
+}
+
+// formatISO8601Duration returns d in ISO 8601 format, rounded down to the nearest
+// minute. Zero and negative durations return an error.
+func formatISO8601Duration(d time.Duration) (string, error) {
+	if d < time.Minute {
+		return "", errors.New("given duration must be 1 minute or more")
+	}
+	builder := strings.Builder{}
+	// We only care about time, start with PT always
+	builder.WriteString("PT")
+
+	h := d / time.Hour
+	d %= time.Hour
+	m := d / time.Minute
+
+	if h > 0 {
+		builder.WriteString(fmt.Sprintf("%dH", h))
+	}
+	if m > 0 {
+		builder.WriteString(fmt.Sprintf("%dM", m))
+	}
+	return builder.String(), nil
 }
