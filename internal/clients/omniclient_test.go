@@ -26,4 +26,11 @@ func Test_NewOmniClient(t *testing.T) {
 		assert.NoError(t, err)
 		assert.NotNil(t, c.RoleAssignmentClient)
 	})
+
+	t.Run("initializes RoleAssignmentScheduleRequestClient", func(t *testing.T) {
+		cred := &CredentialMock{}
+		c, err := NewOmniClient(cred, OmniClientOptions{})
+		assert.NoError(t, err)
+		assert.NotNil(t, c.RoleAssignmentScheduleRequestClient)
+	})
 }
